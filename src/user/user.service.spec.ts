@@ -2,7 +2,6 @@ import { User } from '.prisma/client';
 import {
   ConflictException,
   InternalServerErrorException,
-  NotFoundException,
 } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import {
@@ -14,17 +13,17 @@ import { CreateUserInputDTO } from './dto/create-user-input.dto';
 import { UpdateUserInputDTO } from './dto/update-user-input.dto';
 import { UserService } from './user.service';
 
-describe('UserService', () => {
-  let userService: UserService;
-  let prismaService: PrismaService;
+describe('service', () => {
+  let service: UserService;
+  let prisma: PrismaService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [UserService, PrismaService],
     }).compile();
 
-    prismaService = moduleRef.get<PrismaService>(PrismaService);
-    userService = moduleRef.get<UserService>(UserService);
+    prisma = moduleRef.get<PrismaService>(PrismaService);
+    service = moduleRef.get<UserService>(UserService);
   });
 
   describe('create', () => {
@@ -35,54 +34,30 @@ describe('UserService', () => {
     it('should be create a new user', async () => {
       const data: CreateUserInputDTO = fakeNewUser;
       const user: User = fakeUserEntity;
-      jest.spyOn(prismaService.user, 'create').mockResolvedValue(user);
-      jest.spyOn(prismaService.user as any, 'findUnique').mockReturnValue(null);
-      const userCreated = await userService.create(data);
+      jest.spyOn(prisma.user, 'create').mockResolvedValue(user);
+      jest.spyOn(prisma.user as any, 'findUnique').mockReturnValue(null);
+      const userCreated = await service.create(data);
       expect(userCreated).toMatchObject(user);
-      expect(prismaService.user.create).toHaveBeenCalledTimes(1);
-      expect(prismaService.user.findUnique).toHaveBeenCalledTimes(1);
+      expect(prisma.user.create).toHaveBeenCalledTimes(1);
+      expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
     });
 
     it('should return a exception when user doesnt create a user', async () => {
       const data: CreateUserInputDTO = fakeNewUser;
-      jest.spyOn(prismaService.user as any, 'create').mockResolvedValue(null);
-      jest.spyOn(prismaService.user as any, 'findUnique').mockReturnValue(null);
-      expect(userService.create(data)).rejects.toBeInstanceOf(
+      jest.spyOn(prisma.user as any, 'create').mockResolvedValue(null);
+      jest.spyOn(prisma.user as any, 'findUnique').mockReturnValue(null);
+      expect(service.create(data)).rejects.toBeInstanceOf(
         InternalServerErrorException,
       );
-      expect(prismaService.user.findUnique).toHaveBeenCalledTimes(1);
+      expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
     });
 
     it('should return a exception when user doesnt create because email already exists', async () => {
       const data: CreateUserInputDTO = fakeNewUser;
       const user: User = fakeUserEntity;
-      jest.spyOn(prismaService.user as any, 'findUnique').mockReturnValue(user);
-      expect(userService.create(data)).rejects.toBeInstanceOf(
-        ConflictException,
-      );
-      expect(prismaService.user.findUnique).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('findBy', () => {
-    beforeEach(() => {
-      jest.resetAllMocks();
-    });
-
-    it('must return a user when you have passed the id', async () => {
-      const user: User = fakeUserEntity;
-      jest.spyOn(prismaService.user, 'findMany').mockResolvedValue([user]);
-
-      const userReturned = await userService.findBy('id', 1);
-      expect(userReturned).toMatchObject(user);
-      expect(prismaService.user.findMany).toHaveBeenCalledTimes(1);
-    });
-
-    it('should return a exception when user not found', async () => {
-      jest.spyOn(prismaService.user, 'findMany').mockResolvedValue([]);
-      expect(userService.findBy('id', 1)).rejects.toBeInstanceOf(
-        NotFoundException,
-      );
+      jest.spyOn(prisma.user as any, 'findUnique').mockReturnValue(user);
+      expect(service.create(data)).rejects.toBeInstanceOf(ConflictException);
+      expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -97,15 +72,15 @@ describe('UserService', () => {
         name: 'testing new name',
       };
       const user: User = fakeUserEntity;
-      jest.spyOn(userService, 'findBy').mockResolvedValue(user);
+      jest.spyOn(service, 'findByUniqueKey').mockResolvedValue(user);
       jest
-        .spyOn(prismaService.user, 'update')
+        .spyOn(prisma.user, 'update')
         .mockResolvedValue({ ...user, ...dataUpdated });
 
-      const userUpdated = await userService.update(1, dataUpdated);
+      const userUpdated = await service.update(1, dataUpdated);
       expect(userUpdated).toMatchObject({ ...user, ...dataUpdated });
-      expect(userService.findBy).toHaveBeenCalledTimes(1);
-      expect(prismaService.user.update).toHaveBeenCalledTimes(1);
+      expect(service.findByUniqueKey).toHaveBeenCalledTimes(1);
+      expect(prisma.user.update).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -116,38 +91,20 @@ describe('UserService', () => {
 
     it('should be return true when user has deleted with successfully!', async () => {
       const user: User = fakeUserEntity;
-      jest.spyOn(userService, 'findBy').mockResolvedValue(user);
-      jest.spyOn(prismaService.user, 'delete').mockResolvedValue(user);
+      jest.spyOn(service, 'findByUniqueKey').mockResolvedValue(user);
+      jest.spyOn(prisma.user, 'delete').mockResolvedValue(user);
 
-      const deleted = await userService.delete(1);
+      const deleted = await service.delete(1);
       expect(deleted).toBeTruthy();
     });
 
     it('should be return false when user has not deleted', async () => {
       const user: User = fakeUserEntity;
-      jest.spyOn(userService, 'findBy').mockResolvedValue(user);
-      jest.spyOn(prismaService.user as any, 'delete').mockResolvedValue(null);
+      jest.spyOn(service, 'findByUniqueKey').mockResolvedValue(user);
+      jest.spyOn(prisma.user as any, 'delete').mockResolvedValue(null);
 
-      const deleted = await userService.delete(1);
+      const deleted = await service.delete(1);
       expect(deleted).toBeFalsy();
-    });
-  });
-
-  describe('find', () => {
-    beforeEach(() => {
-      jest.resetAllMocks();
-    });
-
-    it('should be return an array with users', async () => {
-      const user = fakeUserEntity;
-
-      jest
-        .spyOn(prismaService.user, 'findMany')
-        .mockResolvedValue([user, user, user]);
-
-      const users = await userService.find();
-      expect(users).toMatchObject([user, user, user]);
-      expect(prismaService.user.findMany).toHaveBeenCalledTimes(1);
     });
   });
 });
