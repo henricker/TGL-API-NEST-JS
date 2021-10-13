@@ -10,6 +10,7 @@ describe('BaseService', () => {
     findUnique: jest.fn(),
     delete: jest.fn(),
     update: jest.fn(),
+    create: jest.fn(),
   };
   describe('find', () => {
     beforeEach(() => {
@@ -127,6 +128,27 @@ describe('BaseService', () => {
       expect(BaseService.prototype.findByUniqueKey).toHaveBeenCalledTimes(1);
       expect(
         BaseService.prototype['prisma']['entity'].update,
+      ).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('create', () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it('should be create a new entity', async () => {
+      const entityData = { name: 'Joe Doe' };
+      const entityMocked = { id: 1, ...entityData };
+
+      BaseService.prototype['prisma']['entity'].create.mockResolvedValue(
+        entityMocked,
+      );
+
+      const entity = await BaseService.prototype.create(entityData);
+      expect(entity).toMatchObject(entityMocked);
+      expect(
+        BaseService.prototype['prisma']['entity'].create,
       ).toHaveBeenCalledTimes(1);
     });
   });
