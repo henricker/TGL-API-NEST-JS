@@ -28,6 +28,7 @@ model User {
   role                     Role       @relation(fields: [roleId], references: [id])
   createdAt                DateTime   @default(now())
   updatedAt                DateTime   @default(now())
+  Bet                      Bet[]
 }
 
 model Game {
@@ -41,12 +42,15 @@ model Game {
    minCartValue   Int
    createdAt      DateTime @default(now())
    updatedAt      DateTime @default(now())
+   Bet            Bet[]
 }
 
 model Bet {
   id             Int      @id   @default(autoincrement())
-  userId         Int 
-  gameId         Int 
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: SetNull) 
+  gameId         Int
+  game           Game     @relation(fields: [gameId], references: [id], onUpdate: Cascade, onDelete: SetNull)  
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now())
 }
