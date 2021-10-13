@@ -42,3 +42,11 @@ model Game {
    createdAt      DateTime @default(now())
    updatedAt      DateTime @default(now())
 }
+
+model Bet {
+  id             Int      @id   @default(autoincrement())
+  userId         Int 
+  gameId         Int 
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
+}
