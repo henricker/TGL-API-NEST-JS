@@ -11,7 +11,10 @@ export default abstract class BaseService<T> {
     this.typeName = this.constructor.name.replace('Service', '').toLowerCase();
   }
 
-  public abstract create(data: Partial<T>): Promise<T>;
+  public async create(data: Partial<T>): Promise<T> {
+    const entity = await this.prisma[this.typeName].create({ data });
+    return entity;
+  }
 
   public async update(id: number, data: Partial<T>): Promise<T> {
     const entity = await this.findByUniqueKey('id', id);
