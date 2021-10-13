@@ -17,17 +17,17 @@ model Role {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  name     String
-  email    String @unique
-  password String
-  lastBet DateTime?
-  rememberMeToken String?
+  id                       Int        @id @default(autoincrement())
+  name                     String
+  email                    String     @unique
+  password                 String
+  lastBet                  DateTime?
+  rememberMeToken          String?
   rememberMeTokenCreatedAt DateTime?
-  roleId   Int    @default(2)
-  role     Role   @relation(fields: [roleId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  roleId                   Int        @default(2)
+  role                     Role       @relation(fields: [roleId], references: [id])
+  createdAt                DateTime   @default(now())
+  updatedAt                DateTime   @default(now())
 }
 
 model Game {
@@ -38,7 +38,7 @@ model Game {
    price          Float
    maxNumber      Int
    color          String
-   min_cart_value Int
-   createdAt DateTime @default(now())
-   updatedAt DateTime @default(now())
+   minCartValue   Int
+   createdAt      DateTime @default(now())
+   updatedAt      DateTime @default(now())
 }
