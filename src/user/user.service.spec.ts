@@ -132,4 +132,22 @@ describe('UserService', () => {
       expect(deleted).toBeFalsy();
     });
   });
+
+  describe('find', () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it('should be return an array with users', async () => {
+      const user = fakeUserEntity;
+
+      jest
+        .spyOn(prismaService.user, 'findMany')
+        .mockResolvedValue([user, user, user]);
+
+      const users = await userService.find();
+      expect(users).toMatchObject([user, user, user]);
+      expect(prismaService.user.findMany).toHaveBeenCalledTimes(1);
+    });
+  });
 });
