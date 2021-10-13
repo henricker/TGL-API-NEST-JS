@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Bet } from '.prisma/client';
-import BaseService from 'src/shared/base.service';
+import BaseService from '../shared/base.service';
 import { CreateBetInputDTO } from './dto/create-bet-input.dto';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class BetService extends BaseService<Bet> {
