@@ -13,22 +13,22 @@ generator client {
 model Role {
   id   Int    @id @default(autoincrement())
   name String @unique
-  User User[]
+  users User[]
 }
 
 model User {
   id                       Int        @id @default(autoincrement())
+  role                     Role       @relation(fields: [roleId], references: [id])
+  roleId                   Int        @default(2)
   name                     String
   email                    String     @unique
   password                 String
   lastBet                  DateTime?
   rememberMeToken          String?
   rememberMeTokenCreatedAt DateTime?
-  roleId                   Int        @default(2)
-  role                     Role       @relation(fields: [roleId], references: [id])
   createdAt                DateTime   @default(now())
   updatedAt                DateTime   @default(now())
-  Bet                      Bet[]
+  bets                     Bet[]
 }
 
 model Game {
@@ -42,15 +42,15 @@ model Game {
    minCartValue   Int
    createdAt      DateTime @default(now())
    updatedAt      DateTime @default(now())
-   Bet            Bet[]
+   bets           Bet[]
 }
 
 model Bet {
   id             Int      @id   @default(autoincrement())
-  userId         Int
   user           User     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: SetNull) 
-  gameId         Int
+  userId         Int
   game           Game     @relation(fields: [gameId], references: [id], onUpdate: Cascade, onDelete: SetNull)  
+  gameId         Int
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now())
 }
