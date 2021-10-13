@@ -29,3 +29,16 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 }
+
+model Game {
+   id             Int     @id @default(autoincrement())
+   type           String  @unique
+   description    String 
+   range          Int
+   price          Float
+   maxNumber      Int
+   color          String
+   min_cart_value Int
+   createdAt DateTime @default(now())
+   updatedAt DateTime @default(now())
+}
