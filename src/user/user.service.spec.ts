@@ -10,7 +10,6 @@ import {
 } from '../../test/mock/fakes/fake-test-user-util';
 import { PrismaService } from '../prisma.service';
 import { CreateUserInputDTO } from './dto/create-user-input.dto';
-import { UpdateUserInputDTO } from './dto/update-user-input.dto';
 import { UserService } from './user.service';
 
 describe('service', () => {
@@ -58,29 +57,6 @@ describe('service', () => {
       jest.spyOn(prisma.user as any, 'findUnique').mockReturnValue(user);
       expect(service.create(data)).rejects.toBeInstanceOf(ConflictException);
       expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('update', () => {
-    beforeEach(() => {
-      jest.resetAllMocks();
-    });
-
-    it('should be update user when has passed id', async () => {
-      const dataUpdated: UpdateUserInputDTO = {
-        email: 'otherEmail@testing.com',
-        name: 'testing new name',
-      };
-      const user: User = fakeUserEntity;
-      jest.spyOn(service, 'findByUniqueKey').mockResolvedValue(user);
-      jest
-        .spyOn(prisma.user, 'update')
-        .mockResolvedValue({ ...user, ...dataUpdated });
-
-      const userUpdated = await service.update(1, dataUpdated);
-      expect(userUpdated).toMatchObject({ ...user, ...dataUpdated });
-      expect(service.findByUniqueKey).toHaveBeenCalledTimes(1);
-      expect(prisma.user.update).toHaveBeenCalledTimes(1);
     });
   });
 });
