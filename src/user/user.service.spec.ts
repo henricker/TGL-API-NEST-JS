@@ -83,28 +83,4 @@ describe('service', () => {
       expect(prisma.user.update).toHaveBeenCalledTimes(1);
     });
   });
-
-  describe('delete', () => {
-    beforeEach(() => {
-      jest.resetAllMocks();
-    });
-
-    it('should be return true when user has deleted with successfully!', async () => {
-      const user: User = fakeUserEntity;
-      jest.spyOn(service, 'findByUniqueKey').mockResolvedValue(user);
-      jest.spyOn(prisma.user, 'delete').mockResolvedValue(user);
-
-      const deleted = await service.delete(1);
-      expect(deleted).toBeTruthy();
-    });
-
-    it('should be return false when user has not deleted', async () => {
-      const user: User = fakeUserEntity;
-      jest.spyOn(service, 'findByUniqueKey').mockResolvedValue(user);
-      jest.spyOn(prisma.user as any, 'delete').mockResolvedValue(null);
-
-      const deleted = await service.delete(1);
-      expect(deleted).toBeFalsy();
-    });
-  });
 });
