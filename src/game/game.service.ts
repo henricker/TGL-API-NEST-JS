@@ -18,7 +18,7 @@ export class GameService extends BaseService<Game> {
     if (gameExists)
       throw new ConflictException('error: game type already exists');
 
-    const game = await this.prisma.game.create({ data: data });
+    const game = await this.prisma.game.create({ data });
     return game;
   }
 }
