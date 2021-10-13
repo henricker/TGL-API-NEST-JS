@@ -60,4 +60,9 @@ export class UserService {
 
     return deleted;
   }
+
+  public async find(): Promise<User[]> {
+    const users = await this.prisma.user.findMany();
+    return users;
+  }
 }
