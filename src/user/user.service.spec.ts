@@ -7,7 +7,7 @@ import { Test } from '@nestjs/testing';
 import {
   fakeNewUser,
   fakeUserEntity,
-} from '../../test/mock/fakes/fake-test-user-util';
+} from '../../test/mock/fakes/fake-test-user';
 import { PrismaService } from '../prisma.service';
 import { CreateUserInputDTO } from './dto/create-user-input.dto';
 import { UserService } from './user.service';
