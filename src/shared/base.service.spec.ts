@@ -9,6 +9,7 @@ describe('BaseService', () => {
     findMany: jest.fn(),
     findUnique: jest.fn(),
     delete: jest.fn(),
+    update: jest.fn(),
   };
   describe('find', () => {
     beforeEach(() => {
@@ -95,6 +96,37 @@ describe('BaseService', () => {
       ).toHaveBeenCalledTimes(1);
       expect(
         BaseService.prototype['prisma']['entity'].delete,
+      ).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('update', () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it('should be update user when has passed id', async () => {
+      const dataUpdated = {
+        name: 'joe twincks',
+      };
+      const entity = {
+        id: 1,
+        name: 'joe twincks',
+      };
+      jest
+        .spyOn(BaseService.prototype, 'findByUniqueKey')
+        .mockResolvedValue(entity);
+
+      BaseService.prototype['prisma']['entity'].update.mockResolvedValue({
+        ...entity,
+        ...dataUpdated,
+      });
+
+      const entityUpdated = await BaseService.prototype.update(1, dataUpdated);
+      expect(entityUpdated).toMatchObject({ ...entity, ...dataUpdated });
+      expect(BaseService.prototype.findByUniqueKey).toHaveBeenCalledTimes(1);
+      expect(
+        BaseService.prototype['prisma']['entity'].update,
       ).toHaveBeenCalledTimes(1);
     });
   });

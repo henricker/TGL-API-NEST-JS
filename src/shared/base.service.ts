@@ -12,7 +12,16 @@ export default abstract class BaseService<T> {
   }
 
   public abstract create(data: Partial<T>): Promise<T>;
-  public abstract update(id: number, data: Partial<T>): Promise<T>;
+
+  public async update(id: number, data: Partial<T>): Promise<T> {
+    const entity = await this.findByUniqueKey('id', id);
+    const entityUpdated = await this.prisma[this.typeName].update({
+      where: { id },
+      data: { ...entity, ...data, updatedAt: new Date() },
+    });
+
+    return entityUpdated;
+  }
 
   public async findByUniqueKey(fieldName: string, value: any): Promise<T> {
     const where = {};
