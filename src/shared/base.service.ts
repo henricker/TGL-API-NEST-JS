@@ -11,28 +11,37 @@ export default abstract class BaseService<T> {
     this.typeName = this.constructor.name.replace('Service', '').toLowerCase();
   }
 
-  public async create(data: Partial<T>): Promise<T> {
-    const entity = await this.prisma[this.typeName].create({ data });
+  public async create(data: Partial<T>, load?: any): Promise<T> {
+    const entity = await this.prisma[this.typeName].create({
+      data,
+      include: load,
+    });
     return entity;
   }
 
-  public async update(id: number, data: Partial<T>): Promise<T> {
+  public async update(id: number, data: Partial<T>, load?: any): Promise<T> {
     const entity = await this.findByUniqueKey('id', id);
     const entityUpdated = await this.prisma[this.typeName].update({
       where: { id },
       data: { ...entity, ...data, updatedAt: new Date() },
+      include: load,
     });
 
     return entityUpdated;
   }
 
-  public async findByUniqueKey(fieldName: string, value: any): Promise<T> {
+  public async findByUniqueKey(
+    fieldName: string,
+    value: any,
+    load?: any,
+  ): Promise<T> {
     const where = {};
     where[fieldName] = value;
 
     try {
       const entity = await this.prisma[this.typeName].findUnique({
         where,
+        include: load,
       });
 
       if (!entity)
@@ -46,8 +55,8 @@ export default abstract class BaseService<T> {
     }
   }
 
-  public async find(): Promise<T[]> {
-    const entities = await this.prisma[this.typeName].findMany();
+  public async find(options?: findOptions): Promise<T[]> {
+    const entities = await this.prisma[this.typeName].findMany(options);
     return entities;
   }
 
@@ -59,3 +68,9 @@ export default abstract class BaseService<T> {
     return deleted;
   }
 }
+
+type findOptions = {
+  include?: any;
+  select?: any;
+  where?: any;
+};
