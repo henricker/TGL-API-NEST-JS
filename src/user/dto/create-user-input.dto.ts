@@ -1,5 +1,12 @@
 import { Bet } from '.prisma/client';
-import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
+import { Optional } from '@nestjs/common';
+import {
+  IsArray,
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  Matches,
+} from 'class-validator';
 
 export class CreateUserInputDTO {
   @IsString()
@@ -14,5 +21,8 @@ export class CreateUserInputDTO {
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
   )
   password: string;
+
+  @IsArray()
+  @Optional()
   bets?: Bet[];
 }
