@@ -93,5 +93,5 @@ input CreateBetInputDTO {
 }
 
 input UpdateBetInputDTO {
-  numbers: String!
+  numbers: [Int!]!
 }
