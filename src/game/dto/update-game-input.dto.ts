@@ -1,36 +1,46 @@
+import { Field, Float, InputType, Int } from '@nestjs/graphql';
 import {
   IsInt,
-  IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Matches,
 } from 'class-validator';
 
+@InputType()
 export class UpdateGameInputDTO {
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  type: string;
+  type?: string;
 
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  description: string;
+  description?: string;
 
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
   @IsInt()
-  @IsNotEmpty()
-  range: number;
+  range?: number;
 
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
   @IsInt()
-  @IsNotEmpty()
-  maxNumber: number;
+  maxNumber?: number;
 
+  @Field(() => Float, { nullable: true })
+  @IsOptional()
   @IsNumber()
-  @IsNotEmpty()
-  price: number;
+  price?: number;
 
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   @Matches(/^#([0-9A-F]{3}){1,2}$/i)
-  color: string;
+  color?: string;
 
+  @Field(() => Int, { nullable: true })
   @IsInt()
-  @IsNotEmpty()
-  minCartValue: number;
+  @IsOptional()
+  minCartValue?: number;
 }
