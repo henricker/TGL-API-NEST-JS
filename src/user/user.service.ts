@@ -14,14 +14,14 @@ export class UserService extends BaseService<User> {
     super(prisma);
   }
 
-  public async create(data: CreateUserInputDTO): Promise<User> {
+  public async create(data: CreateUserInputDTO, load?: any): Promise<User> {
     const emailExists = !!(await this.prisma.user.findUnique({
       where: { email: data.email },
     }));
 
     if (emailExists) throw new ConflictException('error: email already exists');
 
-    const user = await this.prisma.user.create({ data });
+    const user = await this.prisma.user.create({ data, include: load });
 
     if (!user)
       throw new InternalServerErrorException('error: cannot create user');
