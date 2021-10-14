@@ -1,25 +1,21 @@
 import { User } from '.prisma/client';
-import {
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import BaseService from '../shared/base.service';
 import { PrismaService } from '../prisma.service';
 import { CreateUserInputDTO } from './dto/create-user-input.dto';
+import { BussinessRulesUser } from './validator/bussiness-user.rule';
 
 @Injectable()
 export class UserService extends BaseService<User> {
-  constructor(prisma: PrismaService) {
+  constructor(
+    prisma: PrismaService,
+    private bussinessRules: BussinessRulesUser,
+  ) {
     super(prisma);
   }
 
   public async create(data: CreateUserInputDTO, load?: any): Promise<User> {
-    const emailExists = !!(await this.prisma.user.findUnique({
-      where: { email: data.email },
-    }));
-
-    if (emailExists) throw new ConflictException('error: email already exists');
+    await this.bussinessRules.validateCreate({ email: data.email });
 
     const user = await this.prisma.user.create({ data, include: load });
 
