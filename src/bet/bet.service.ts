@@ -4,25 +4,16 @@ import BaseService from '../shared/base.service';
 import { CreateBetInputDTO } from './dto/create-bet-input.dto';
 import { PrismaService } from '../prisma.service';
 import { UpdateBetInputDTO } from './dto/update-bet-input.dto';
+import BetBussinessRules from './validator/business-rules.util';
 
 @Injectable()
 export class BetService extends BaseService<Bet> {
-  constructor(prisma: PrismaService) {
+  constructor(prisma: PrismaService, private businessRules: BetBussinessRules) {
     super(prisma);
   }
 
   public async createBet(data: CreateBetInputDTO): Promise<Bet> {
-    const existsUser = !!(await this.prisma.user.findUnique({
-      where: { id: data.userId },
-    }));
-
-    if (!existsUser) throw new NotFoundException('error: user not found');
-
-    const existsGame = !!(await this.prisma.game.findUnique({
-      where: { id: data.gameId },
-    }));
-
-    if (!existsGame) throw new NotFoundException('error: game not found');
+    await this.businessRules.validateOnCreate({ ...data });
 
     const bet = await this.prisma.bet.create({
       data: {
@@ -69,10 +60,18 @@ export class BetService extends BaseService<Bet> {
     betId: number,
     data: UpdateBetInputDTO,
   ): Promise<Bet> {
-    const bet = await this.show(userId, betId);
+    await this.businessRules.validateOnUpdate({
+      userId,
+      betId,
+      numbers: data.numbers,
+    });
+
     const betUpdated = await this.prisma.bet.update({
-      data,
-      where: { id: bet.id },
+      data: {
+        ...data,
+        numbers: data.numbers?.join(' '),
+      },
+      where: { id: betId },
       include: { game: true, user: true },
     });
 
