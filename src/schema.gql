@@ -1,0 +1,97 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Role {
+  id: ID!
+  name: String!
+}
+
+type User {
+  id: ID!
+  role: Role!
+  name: String!
+  email: String!
+  roleId: Float!
+}
+
+type Game {
+  id: ID!
+  type: String!
+  description: String!
+  range: Float!
+  price: Float!
+  maxNumber: Float!
+  color: String!
+  minCartValue: Float!
+}
+
+type Bet {
+  userId: Int!
+  gameId: Int!
+  user: User!
+  game: Game!
+  numbers: [Int!]!
+}
+
+type Query {
+  users: [User!]!
+  user(id: Float!): User!
+  game(id: Float!): Game!
+  games: [Game!]!
+  bets(userId: Float!): [Bet!]!
+  bet(betId: Float!, userId: Float!): Bet!
+}
+
+type Mutation {
+  createUser(data: CreateUserInputDTO!): User!
+  updateUser(data: UpdateUserInputDTO!, id: Float!): User!
+  deleteUser(id: Float!): Boolean!
+  createGame(data: CreateGameInputDTO!): Game!
+  updateGame(data: UpdateGameInputDTO!, id: Float!): Game!
+  deleteGame(id: Float!): Boolean!
+  createBet(data: CreateBetInputDTO!): Bet!
+  deleteBet(betId: Float!, userId: Float!): Boolean!
+  updateBet(data: UpdateBetInputDTO!, betId: Float!, userId: Float!): Bet!
+}
+
+input CreateUserInputDTO {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input UpdateUserInputDTO {
+  name: String
+  email: String
+}
+
+input CreateGameInputDTO {
+  type: String!
+  description: String!
+  range: Int!
+  maxNumber: Int!
+  price: Float!
+  color: String!
+  minCartValue: Int!
+}
+
+input UpdateGameInputDTO {
+  type: String
+  description: String
+  range: Int
+  maxNumber: Int
+  price: Float
+  color: String
+  minCartValue: Int
+}
+
+input CreateBetInputDTO {
+  userId: Int!
+  gameId: Int!
+  numbers: [Int!]!
+}
+
+input UpdateBetInputDTO {
+  numbers: String!
+}
