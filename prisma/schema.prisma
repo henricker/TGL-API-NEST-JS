@@ -51,6 +51,7 @@ model Bet {
   userId         Int
   game           Game     @relation(fields: [gameId], references: [id], onUpdate: Cascade, onDelete: SetNull)  
   gameId         Int
+  numbers        String  
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now())
 }
