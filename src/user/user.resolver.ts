@@ -13,7 +13,6 @@ export class UserResolver {
     @Args('data') data: CreateUserInputDTO,
   ): Promise<User> {
     const user = await this.service.create(data, { role: true });
-    console.log(user);
     return { ...user, role: user['role'] };
   }
 
