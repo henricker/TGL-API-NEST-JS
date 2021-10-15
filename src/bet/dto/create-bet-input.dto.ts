@@ -6,11 +6,6 @@ export class CreateBetInputDTO {
   @Field(() => Int)
   @IsInt()
   @IsNotEmpty()
-  userId: number;
-
-  @Field(() => Int)
-  @IsInt()
-  @IsNotEmpty()
   gameId: number;
 
   @Field(() => [Int])

@@ -12,19 +12,23 @@ export class BetService extends BaseService<Bet> {
     super(prisma);
   }
 
-  public async createBet(data: CreateBetInputDTO): Promise<Bet> {
-    await this.businessRules.validateOnCreate({ ...data });
+  public async createBet(
+    userId: number,
+    data: CreateBetInputDTO,
+  ): Promise<Bet> {
+    await this.businessRules.validateOnCreate(userId, { ...data });
 
     const bet = await this.prisma.bet.create({
       data: {
-        ...data,
+        userId,
         numbers: data.numbers.join(' '),
+        gameId: data.gameId,
       },
       include: { user: true, game: true },
     });
 
     await this.prisma.user.update({
-      where: { id: data.userId },
+      where: { id: userId },
       data: { lastBet: new Date() },
     });
 
