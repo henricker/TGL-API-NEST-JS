@@ -8,7 +8,6 @@ import { PrismaService } from 'src/prisma.service';
 
 type validateOnCreate = {
   gameId: number;
-  userId: number;
   numbers: number[];
 };
 
@@ -22,11 +21,10 @@ type validateOnUpdate = {
 export default class BetBussinessRules {
   constructor(private prisma: PrismaService) {}
 
-  public async validateOnCreate({
-    gameId,
-    userId,
-    numbers,
-  }: validateOnCreate): Promise<void> {
+  public async validateOnCreate(
+    userId: number,
+    { gameId, numbers }: validateOnCreate,
+  ): Promise<void> {
     const gameExists = await this.prisma.game.findUnique({
       where: { id: gameId },
     });
