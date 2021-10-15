@@ -2,19 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Role {
-  id: ID!
-  name: String!
-}
-
-type User {
-  id: ID!
-  role: Role!
-  name: String!
-  email: String!
-  roleId: Float!
-}
-
 type Game {
   id: ID!
   type: String!
@@ -27,11 +14,22 @@ type Game {
 }
 
 type Bet {
-  userId: Int!
-  gameId: Int!
+  id: ID!
   user: User!
   game: Game!
   numbers: [Int!]!
+}
+
+type Role {
+  id: ID!
+  name: String!
+}
+
+type User {
+  id: ID!
+  role: Role!
+  name: String!
+  email: String!
 }
 
 type AuthType {
@@ -41,23 +39,23 @@ type AuthType {
 
 type Query {
   users: [User!]!
-  user(id: Float!): User!
+  user: User!
   game(id: Float!): Game!
   games: [Game!]!
-  bets(userId: Float!): [Bet!]!
-  bet(betId: Float!, userId: Float!): Bet!
+  bets: [Bet!]!
+  bet(betId: Float!): Bet!
 }
 
 type Mutation {
   createUser(data: CreateUserInputDTO!): User!
-  updateUser(data: UpdateUserInputDTO!, id: Float!): User!
-  deleteUser(id: Float!): Boolean!
+  updateUser(data: UpdateUserInputDTO!): User!
+  deleteUser: Boolean!
   createGame(data: CreateGameInputDTO!): Game!
   updateGame(data: UpdateGameInputDTO!, id: Float!): Game!
   deleteGame(id: Float!): Boolean!
   createBet(data: CreateBetInputDTO!): Bet!
-  deleteBet(betId: Float!, userId: Float!): Boolean!
-  updateBet(data: UpdateBetInputDTO!, betId: Float!, userId: Float!): Bet!
+  deleteBet(betId: Float!): Boolean!
+  updateBet(data: UpdateBetInputDTO!, betId: Float!): Bet!
   authenticate(data: AuthInputDTO!): AuthType!
 }
 
@@ -93,7 +91,6 @@ input UpdateGameInputDTO {
 }
 
 input CreateBetInputDTO {
-  userId: Int!
   gameId: Int!
   numbers: [Int!]!
 }
