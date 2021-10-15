@@ -26,4 +26,20 @@ export class UserService extends BaseService<User> {
 
     return user;
   }
+
+  public async update(
+    id: number,
+    data: Partial<User>,
+    load?: any,
+  ): Promise<User> {
+    await this.bussinessRules.validateOnUpdate(id, data);
+
+    const userUpdated = await this.prisma.user.update({
+      where: { id },
+      data: { ...data, updatedAt: new Date() },
+      include: load,
+    });
+
+    return userUpdated;
+  }
 }
