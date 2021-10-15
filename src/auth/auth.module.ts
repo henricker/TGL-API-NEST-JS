@@ -5,6 +5,7 @@ import { BussinessRulesUser } from 'src/user/validator/bussiness-user.rule';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthResolver } from './auth.resolver';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthResolver } from './auth.resolver';
     PrismaService,
     BussinessRulesUser,
     AuthResolver,
+    JwtStrategy,
   ],
 })
 export class AuthModule {}

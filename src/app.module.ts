@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
     BetModule,
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      context: ({ req }) => ({ req }),
     }),
     AuthModule,
   ],
