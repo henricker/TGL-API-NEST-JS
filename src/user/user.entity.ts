@@ -21,8 +21,6 @@ export class User {
   @HideField()
   password: string;
 
-  roleId: number;
-
   @Field(() => Role)
   role: Role;
 }
