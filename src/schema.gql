@@ -34,6 +34,11 @@ type Bet {
   numbers: [Int!]!
 }
 
+type AuthType {
+  user: User!
+  token: String!
+}
+
 type Query {
   users: [User!]!
   user(id: Float!): User!
@@ -53,6 +58,7 @@ type Mutation {
   createBet(data: CreateBetInputDTO!): Bet!
   deleteBet(betId: Float!, userId: Float!): Boolean!
   updateBet(data: UpdateBetInputDTO!, betId: Float!, userId: Float!): Bet!
+  authenticate(data: AuthInputDTO!): AuthType!
 }
 
 input CreateUserInputDTO {
@@ -94,4 +100,9 @@ input CreateBetInputDTO {
 
 input UpdateBetInputDTO {
   numbers: [Int!]!
+}
+
+input AuthInputDTO {
+  email: String!
+  password: String!
 }
