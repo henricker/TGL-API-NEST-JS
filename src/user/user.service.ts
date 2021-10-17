@@ -5,9 +5,25 @@ import { PrismaService } from '../prisma.service';
 import { CreateUserInputDTO } from './dto/create-user-input.dto';
 import { BussinessRulesUser } from './validator/bussiness-user.rule';
 import { HashPasswordTransform } from 'src/shared/helpers/HashPasswordTransformter';
+import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 
 @Injectable()
 export class UserService extends BaseService<User> {
+  @Client({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        clientId: 'user',
+        brokers: ['localhost:9092'],
+      },
+      consumer: {
+        groupId: 'user-consumer',
+        allowAutoTopicCreation: true,
+      },
+    },
+  })
+  private clientKafka: ClientKafka;
+
   constructor(
     prisma: PrismaService,
     private bussinessRules: BussinessRulesUser,
@@ -23,6 +39,14 @@ export class UserService extends BaseService<User> {
 
     if (!user)
       throw new InternalServerErrorException('error: cannot create user');
+
+    this.clientKafka.emit('mailer-event', {
+      contact: {
+        name: user.name,
+        email: user.email,
+      },
+      template: 'welcome-user',
+    });
 
     return user;
   }

@@ -12,13 +12,10 @@ import { Roles } from 'src/auth/decorators/Roles.decorator';
 import { Role } from 'src/auth/enum/role.enum';
 
 @Resolver('User')
-@UseGuards(GqlAuthGuard)
 export class UserResolver {
   constructor(private service: UserService) {}
 
   @Mutation(() => User)
-  @Roles(Role.User)
-  @UseGuards(RolesGuard)
   public async createUser(
     @Args('data') data: CreateUserInputDTO,
   ): Promise<User> {
@@ -29,6 +26,7 @@ export class UserResolver {
   @Query(() => [User])
   @Roles(Role.Admin)
   @UseGuards(RolesGuard)
+  @UseGuards(GqlAuthGuard)
   public async users(): Promise<User[]> {
     const user = await this.service.find({
       include: { role: true },
@@ -44,6 +42,7 @@ export class UserResolver {
   @Query(() => User)
   @Roles(Role.User)
   @UseGuards(RolesGuard)
+  @UseGuards(GqlAuthGuard)
   public async user(@CurrentUser() userPrisma: UserPrisma): Promise<User> {
     return {
       ...userPrisma,
@@ -54,6 +53,7 @@ export class UserResolver {
   @Mutation(() => User)
   @Roles(Role.User)
   @UseGuards(RolesGuard)
+  @UseGuards(GqlAuthGuard)
   public async updateUser(
     @CurrentUser() userPrisma: UserPrisma,
     @Args('data') data: UpdateUserInputDTO,
@@ -67,6 +67,7 @@ export class UserResolver {
   @Mutation(() => Boolean)
   @Roles(Role.User)
   @UseGuards(RolesGuard)
+  @UseGuards(GqlAuthGuard)
   public async deleteUser(
     @CurrentUser() userPrisma: UserPrisma,
   ): Promise<boolean> {

@@ -37,7 +37,6 @@ export default abstract class BaseService<T> {
   ): Promise<T> {
     const where = {};
     where[fieldName] = value;
-
     try {
       const entity = await this.prisma[this.typeName].findUnique({
         where,
@@ -49,8 +48,9 @@ export default abstract class BaseService<T> {
 
       return entity;
     } catch (err) {
-      if (err instanceof PrismaClientValidationError)
+      if (err instanceof PrismaClientValidationError) {
         throw new NotFoundException(`error: ${this.typeName} not found`);
+      }
       throw err;
     }
   }

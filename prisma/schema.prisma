@@ -24,7 +24,7 @@ model User {
   email                    String     @unique
   password                 String
   lastBet                  DateTime?
-  rememberMeToken          String?
+  rememberMeToken          String?    @unique
   rememberMeTokenCreatedAt DateTime?
   createdAt                DateTime   @default(now())
   updatedAt                DateTime   @default(now())

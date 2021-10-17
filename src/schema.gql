@@ -2,6 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Role {
+  id: ID!
+  name: String!
+}
+
+type User {
+  id: ID!
+  role: Role!
+  name: String!
+  email: String!
+}
+
 type Game {
   id: ID!
   type: String!
@@ -18,18 +30,6 @@ type Bet {
   user: User!
   game: Game!
   numbers: [Int!]!
-}
-
-type Role {
-  id: ID!
-  name: String!
-}
-
-type User {
-  id: ID!
-  role: Role!
-  name: String!
-  email: String!
 }
 
 type AuthType {
@@ -59,6 +59,8 @@ type Mutation {
   authenticate(data: AuthInputDTO!): AuthType!
   promote(id: Float!): User!
   demote(id: Float!): User!
+  forgotPassword(email: String!): String!
+  refreshPassword(password: String!, token: String!): String!
 }
 
 input CreateUserInputDTO {
