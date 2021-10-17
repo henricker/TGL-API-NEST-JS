@@ -5,6 +5,7 @@ import { BetModule } from './bet/bet.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AuthModule } from './auth/auth.module';
       context: ({ req }) => ({ req }),
     }),
     AuthModule,
+    AdminModule,
   ],
 })
 export class AppModule {}

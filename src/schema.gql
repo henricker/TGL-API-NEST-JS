@@ -57,6 +57,8 @@ type Mutation {
   deleteBet(betId: Float!): Boolean!
   updateBet(data: UpdateBetInputDTO!, betId: Float!): Bet!
   authenticate(data: AuthInputDTO!): AuthType!
+  promote(id: Float!): User!
+  demote(id: Float!): User!
 }
 
 input CreateUserInputDTO {

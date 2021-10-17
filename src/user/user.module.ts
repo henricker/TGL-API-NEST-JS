@@ -6,6 +6,6 @@ import { BussinessRulesUser } from './validator/bussiness-user.rule';
 
 @Module({
   providers: [UserService, PrismaService, UserResolver, BussinessRulesUser],
-  exports: [UserService],
+  exports: [UserService, BussinessRulesUser],
 })
 export class UserModule {}
