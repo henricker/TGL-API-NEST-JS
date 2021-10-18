@@ -5,9 +5,25 @@ import { CreateBetInputDTO } from './dto/create-bet-input.dto';
 import { PrismaService } from '../prisma.service';
 import { UpdateBetInputDTO } from './dto/update-bet-input.dto';
 import BetBussinessRules from './validator/business-rules.util';
+import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 
 @Injectable()
 export class BetService extends BaseService<Bet> {
+  @Client({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        clientId: 'user',
+        brokers: ['localhost:9092'],
+      },
+      consumer: {
+        groupId: 'user-consumer',
+        allowAutoTopicCreation: true,
+      },
+    },
+  })
+  private clientKafka: ClientKafka;
+
   constructor(prisma: PrismaService, private businessRules: BetBussinessRules) {
     super(prisma);
   }
@@ -27,10 +43,24 @@ export class BetService extends BaseService<Bet> {
       include: { user: true, game: true },
     });
 
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: { lastBet: new Date() },
-    });
+    const betsPlaced = [
+      { game: bet.game.type, color: bet.game.color, numbers: bet.numbers },
+    ];
+    this.clientKafka.emit('mailer-event', {
+      contact: {
+        name: bet.user.name,
+        email: bet.user.email,
+      },
+      bets: {
+        totalPrice: bet.game.price,
+        arrayBets: betsPlaced,
+      },
+      template: 'new-bets-user',
+    }),
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { lastBet: new Date() },
+      });
 
     return bet;
   }
